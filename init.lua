@@ -1,9 +1,7 @@
 require("plugins/lazy")
 
-
 vim.cmd [[set signcolumn=yes:1]]
 vim.cmd [[set relativenumber]]
-
 
 --Stop the stupid pasting over thingy
 vim.api.nvim_set_keymap('x', 'p', 'pgvy', { noremap = true, silent = true })

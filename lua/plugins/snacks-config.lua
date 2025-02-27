@@ -17,7 +17,15 @@ return {
 
     },
     scratch = {
-
+        -- ft = function()
+        --     if vim.bo.buftype == "" and vim.bo.filetype ~= "" then
+        --         return vim.bo.filetype
+        --     end
+        --     return "markdown"
+        -- end
+        ft = function()
+            return "markdown"
+        end
     },
     quickfile = {
 

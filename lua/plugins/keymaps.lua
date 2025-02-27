@@ -168,10 +168,10 @@ com_cent.add({
     },
     {
         desc = "Show Cursor Diagnostics",
-        cmd = "<cmd>Lspsaga show_cursor_diagnostics<CR>",
-        -- cmd = function()
-        --     require("lspsaga.diagnostic.show"):show_diagnostics({ cursor = true, show_layout = '++float' })
-        -- end,
+        -- cmd = "<cmd>Lspsaga show_cursor_diagnostics<CR>",
+        cmd = function()
+                vim.diagnostic.open_float()
+        end,
         keys = { { "n", "<space>e", noremap } }
     },
     {
