@@ -1,5 +1,10 @@
 local saga = require('lspsaga')
 
+
+vim.diagnostic.config({
+  severity_sort = true,
+})
+
 saga.setup({
     finder = {
         edit = { 'o', '<CR>' },

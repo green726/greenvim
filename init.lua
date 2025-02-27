@@ -40,6 +40,7 @@ require("plugins/colors")
 require("plugins/yazi-config")
 require("plugins/codecompanion-config")
 require("plugins/comment-config")
+require("plugins/todo-comments-config")
 
 ---end plugins
 

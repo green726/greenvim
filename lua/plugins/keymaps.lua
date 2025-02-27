@@ -167,11 +167,21 @@ com_cent.add({
         keys = { { "n", "<space>ld", noremap } }
     },
     {
+        desc = "Show Workspace Diagnostics",
+        cmd = "<cmd>Lspsaga show_workspace_diagnostics ++normal<CR>",
+        keys = { { "n", "<space>wd", noremap } }
+    },
+    {
+        desc = "Show Buffer Diagnostics",
+        cmd = "<cmd>Lspsaga show_buf_diagnostics ++normal<CR>",
+        keys = { { "n", "<space>wd", noremap } }
+    },
+    {
         desc = "Show Cursor Diagnostics",
-        -- cmd = "<cmd>Lspsaga show_cursor_diagnostics<CR>",
-        cmd = function()
-                vim.diagnostic.open_float()
-        end,
+        cmd = "<cmd>Lspsaga show_cursor_diagnostics<CR>",
+        -- cmd = function()
+        --         vim.diagnostic.open_float()
+        -- end,
         keys = { { "n", "<space>e", noremap } }
     },
     {
