@@ -36,6 +36,7 @@ require("mason-lspconfig").setup_handlers {
     -- and will be called for each installed server that doesn't have
     -- a dedicated handler.
     function(server_name) -- default handler (optional)
+        -- print("Default handler for " .. server_name)
         require("lspconfig")[server_name].setup {
             on_attach = custom_attach,
             capabilities = capabilities,
@@ -67,6 +68,13 @@ require("mason-lspconfig").setup_handlers {
             }
         }
     end
+}
+
+-- print("Default handler for " .. "c3_lsp")
+require("lspconfig")["c3_lsp"].setup {
+    cmd = {"c3lsp", "--diagnostics-delay", "200"},
+    on_attach = custom_attach,
+    capabilities = capabilities,
 }
 
 vim.api.nvim_create_autocmd("LspAttach", {

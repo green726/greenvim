@@ -93,20 +93,24 @@ require("lazy").setup({
             "mikavilpas/yazi.nvim",
             event = "VeryLazy",
         },
+        {
+          "MeanderingProgrammer/render-markdown.nvim",
+          ft = { "markdown", "codecompanion" }
+        },
         --a necessary plugin to make treesitter work
         { 'reasonml-editor/vim-reason-plus' },
         {
             'github/copilot.vim'
         },
         --AIIII
-        {
-            "olimorris/codecompanion.nvim",
-            dependencies = {
-                "nvim-lua/plenary.nvim",
-                "nvim-treesitter/nvim-treesitter",
-            },
-            config = true
-        },
+        -- {
+        --     "olimorris/codecompanion.nvim",
+        --     dependencies = {
+        --         "nvim-lua/plenary.nvim",
+        --         "nvim-treesitter/nvim-treesitter",
+        --     },
+        --     config = true
+        -- },
     },
     {
         defaults = {

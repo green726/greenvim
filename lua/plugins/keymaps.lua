@@ -40,15 +40,23 @@ com_cent.add({
         cmd = function() Snacks.scratch() end,
         keys = { { "n", "<Leader>s", noremap } }
     },
-    -- {
-    --     desc = "Flash treesitter",
-    --     cmd = function() require("flash").treesitter() end,
-    --     keys = { { "n", "<C-h>", noremap } }
-    -- },
+    {
+        desc = "Flash treesitter",
+        cmd = function() require("flash").treesitter() end,
+        keys = { { "n", "<C-q>", noremap } }
+    },
     {
         desc = "Open Telescope Diagnostics",
         cmd = "<cmd>Telescope diagnostics<CR>",
         keys = { { "n", "td", noremap } }
+    },
+    {
+        desc = "Toggle Term Open Vert",
+        cmd = function()
+            local term_size = math.floor(vim.o.columns / 3)
+            vim.cmd("ToggleTerm direction=vertical size=" .. term_size)
+        end,
+        keys = { { "n", "th", noremap } }
     },
     {
         desc = "Toggle Term Open Float",
@@ -106,6 +114,11 @@ com_cent.add({
         cmd = "<cmd>Telescope buffers<CR>",
         keys = { { "n", "tb", noremap } }
     },
+    -- {
+    --     desc = "Toggle codecompanion chat",
+    --     cmd = "<cmd>CodeCompanionChat Toggle<CR>",
+    --     keys = { { "n", "<Leader>cc", noremap } }
+    -- },
     -- {
     --     desc = "Hop Words",
     --     cmd = "<cmd>lua require'hop'.hint_words()<cr>",
