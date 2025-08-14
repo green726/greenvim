@@ -43,7 +43,7 @@ com_cent.add({
     -- {
     --     desc = "Flash treesitter",
     --     cmd = function() require("flash").treesitter() end,
-    --     keys = { { "n", "<C-h>", noremap } }
+    --     keys = { { "n", "<C-q>" } }
     -- },
     {
         desc = "Open Telescope Diagnostics",

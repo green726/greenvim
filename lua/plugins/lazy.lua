@@ -98,6 +98,10 @@ require("lazy").setup({
         {
             'github/copilot.vim'
         },
+        --copy over ssh
+        {
+        'ojroques/nvim-osc52'
+        },
         --AIIII
         {
             "olimorris/codecompanion.nvim",
