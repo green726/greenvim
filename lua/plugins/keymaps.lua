@@ -3,24 +3,24 @@ local noremap = { noremap = true }
 local noremap_silent = { noremap = true, silent = true }
 
 com_cent.add({
-    {
-        desc = "Telescope code companion",
-        cmd =
-            function()
-                local opts = {
-                    layout_strategy = "vertical",
-                    previewer = false,
-                    layout_config = {
-                        vertical = {
-                            width = 0.5,
-                            height = 0.7,
-                        },
-                    },
-                }
-                require("telescope").extensions.codecompanion.codecompanion(opts)
-            end,
-        keys = { { "n", "tc", noremap } }
-    },
+    -- {
+    --     desc = "Telescope code companion",
+    --     cmd =
+    --         function()
+    --             local opts = {
+    --                 layout_strategy = "vertical",
+    --                 previewer = false,
+    --                 layout_config = {
+    --                     vertical = {
+    --                         width = 0.5,
+    --                         height = 0.7,
+    --                     },
+    --                 },
+    --             }
+    --             require("telescope").extensions.codecompanion.codecompanion(opts)
+    --         end,
+    --     keys = { { "n", "tc", noremap } }
+    -- },
     {
         desc = "Flash jump search",
         cmd = function() require("flash").jump() end,
@@ -40,15 +40,28 @@ com_cent.add({
         cmd = function() Snacks.scratch() end,
         keys = { { "n", "<Leader>s", noremap } }
     },
-    -- {
-    --     desc = "Flash treesitter",
-    --     cmd = function() require("flash").treesitter() end,
-    --     keys = { { "n", "<C-q>" } }
-    -- },
+    {
+        desc = "Flash treesitter",
+        cmd = function() require("flash").treesitter() end,
+        keys = { { "n", "<C-l>", noremap } }
+    },
     {
         desc = "Open Telescope Diagnostics",
         cmd = "<cmd>Telescope diagnostics<CR>",
         keys = { { "n", "td", noremap } }
+    },
+    {
+        desc = "Toggle Term Open Vert",
+        cmd = function()
+            local term_size = math.floor(vim.o.columns / 3)
+            vim.cmd("ToggleTerm direction=vertical size=" .. term_size)
+        end,
+        keys = { { "n", "th", noremap } }
+    },
+    {
+        desc = "Toggle Term Open Tab",
+        cmd = "<cmd>ToggleTerm direction=tab<CR>",
+        keys = { { "n", "tc", noremap } }
     },
     {
         desc = "Toggle Term Open Float",
@@ -106,6 +119,11 @@ com_cent.add({
         cmd = "<cmd>Telescope buffers<CR>",
         keys = { { "n", "tb", noremap } }
     },
+    -- {
+    --     desc = "Toggle codecompanion chat",
+    --     cmd = "<cmd>CodeCompanionChat Toggle<CR>",
+    --     keys = { { "n", "<Leader>cc", noremap } }
+    -- },
     -- {
     --     desc = "Hop Words",
     --     cmd = "<cmd>lua require'hop'.hint_words()<cr>",

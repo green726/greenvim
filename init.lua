@@ -3,6 +3,14 @@ require("plugins/lazy")
 vim.cmd [[set signcolumn=yes:1]]
 vim.cmd [[set relativenumber]]
 
+vim.filetype.add({
+  extension = {
+    c3 = "c3",
+    c3i = "c3",
+    c3t = "c3",
+  },
+})
+
 --Stop the stupid pasting over thingy
 vim.api.nvim_set_keymap('x', 'p', 'pgvy', { noremap = true, silent = true })
 
@@ -38,7 +46,7 @@ require("plugins/harpoon-config")
 require("plugins/lspsaga-config")
 require("plugins/colors")
 require("plugins/yazi-config")
-require("plugins/codecompanion-config")
+-- require("plugins/codecompanion-config")
 require("plugins/comment-config")
 require("plugins/todo-comments-config")
 
