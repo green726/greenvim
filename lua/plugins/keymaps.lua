@@ -1,6 +1,26 @@
-local com_cent = require("commander")
-local noremap = { noremap = true }
+local com_cent       = require("commander")
+local noremap        = { noremap = true }
 local noremap_silent = { noremap = true, silent = true }
+
+-- Define the terminal object ONCE
+local Terminal = require('toggleterm.terminal').Terminal
+local gemini = Terminal:new({
+    cmd = "gemini",
+    display_name = "Gemini",
+    direction = "vertical",
+    -- Use a function for size to make it responsive to window resizes
+    -- size = function(term)
+    --     return math.floor(vim.o.columns / 3) 
+    -- end,
+    -- This is important, it prevents the terminal from opening on startup
+    hidden = true,
+})
+
+-- A dedicated function to toggle this specific terminal
+function _G.toggle_gemini(size)
+    gemini:toggle(size)
+end
+
 
 com_cent.add({
     -- {
@@ -51,10 +71,12 @@ com_cent.add({
         keys = { { "n", "td", noremap } }
     },
     {
-        desc = "Toggle Term Open Vert",
+        desc = "Toggle Term Open Vert Gemini",
+        -- cmd = _G.toggle_gemini,
         cmd = function()
             local term_size = math.floor(vim.o.columns / 3)
-            vim.cmd("ToggleTerm direction=vertical size=" .. term_size)
+            _G.toggle_gemini(term_size)
+            -- vim.cmd("ToggleTerm direction=vertical size=" .. term_size)
         end,
         keys = { { "n", "th", noremap } }
     },
