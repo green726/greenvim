@@ -31,44 +31,44 @@ require("lspconfig")["ocamllsp"].setup {
 }
 
 
-require("mason-lspconfig").setup_handlers {
-    -- The first entry (without a key) will be the default handler
-    -- and will be called for each installed server that doesn't have
-    -- a dedicated handler.
-    function(server_name) -- default handler (optional)
-        -- print("Default handler for " .. server_name)
-        require("lspconfig")[server_name].setup {
-            on_attach = custom_attach,
-            capabilities = capabilities,
-        }
-    end,
-    -- Next, you can provide a dedicated handler for specific servers.
-    -- For example, a handler override for the `rust_analyzer`:
-    ["clangd"] = function()
-        require 'lspconfig'.clangd.setup {
-            -- root_dir = lspconfig.util.root_pattern(
-            --     -- 'meson.build',
-            --     -- '.clangd',
-            --     -- '.clang-tidy',
-            --     'compile_commands.json'
-            --     -- 'compile_flags.txt'
-            --     -- '.clang-format'
-            --     -- 'configure.ac'
-            -- ),
-            capabilities = clangCapabilities,
-            on_attach = custom_attach,
-        }
-    end,
-    -- ["jdtls"] = function()
-    --     lspconfig.jdtls.setup {
-    --         capabilities = capabilities,
-    --         on_attach = custom_attach,
-    --         settings = {
-    --             java = { signatureHelp = { enabled = true }, contentProvider = { preferred = 'fernflower' } }
-    --         }
-    --     }
-    -- end
-}
+-- require("mason-lspconfig").setup_handlers {
+--     -- The first entry (without a key) will be the default handler
+--     -- and will be called for each installed server that doesn't have
+--     -- a dedicated handler.
+--     function(server_name) -- default handler (optional)
+--         -- print("Default handler for " .. server_name)
+--         require("lspconfig")[server_name].setup {
+--             on_attach = custom_attach,
+--             capabilities = capabilities,
+--         }
+--     end,
+--     -- Next, you can provide a dedicated handler for specific servers.
+--     -- For example, a handler override for the `rust_analyzer`:
+--     ["clangd"] = function()
+--         require 'lspconfig'.clangd.setup {
+--             -- root_dir = lspconfig.util.root_pattern(
+--             --     -- 'meson.build',
+--             --     -- '.clangd',
+--             --     -- '.clang-tidy',
+--             --     'compile_commands.json'
+--             --     -- 'compile_flags.txt'
+--             --     -- '.clang-format'
+--             --     -- 'configure.ac'
+--             -- ),
+--             capabilities = clangCapabilities,
+--             on_attach = custom_attach,
+--         }
+--     end,
+--     -- ["jdtls"] = function()
+--     --     lspconfig.jdtls.setup {
+--     --         capabilities = capabilities,
+--     --         on_attach = custom_attach,
+--     --         settings = {
+--     --             java = { signatureHelp = { enabled = true }, contentProvider = { preferred = 'fernflower' } }
+--     --         }
+--     --     }
+--     -- end
+-- }
 
 -- print("Default handler for " .. "c3_lsp")
 require("lspconfig")["c3_lsp"].setup {
