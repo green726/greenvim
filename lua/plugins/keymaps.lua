@@ -81,6 +81,11 @@ com_cent.add({
         keys = { { "n", "tc", noremap } }
     },
     {
+        desc = "Open term in tab",
+        cmd = "<cmd>tabnew | term<CR>",
+        keys = { { "n", "tc", noremap } }
+    },
+    -- {
     --     desc = "Toggle Term Open Tab",
     --     cmd = "<cmd>ToggleTerm direction=tab<CR>",
     --     keys = { { "n", "tc", noremap } }
