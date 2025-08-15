@@ -78,13 +78,13 @@ com_cent.add({
             _G.toggle_gemini(term_size)
             -- vim.cmd("ToggleTerm direction=vertical size=" .. term_size)
         end,
-        keys = { { "n", "th", noremap } }
-    },
-    {
-        desc = "Toggle Term Open Tab",
-        cmd = "<cmd>ToggleTerm direction=tab<CR>",
         keys = { { "n", "tc", noremap } }
     },
+    {
+    --     desc = "Toggle Term Open Tab",
+    --     cmd = "<cmd>ToggleTerm direction=tab<CR>",
+    --     keys = { { "n", "tc", noremap } }
+    -- },
     {
         desc = "Toggle Term Open Float",
         cmd = "<cmd>ToggleTerm direction=float<CR>",
