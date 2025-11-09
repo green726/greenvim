@@ -3,6 +3,23 @@ local lspkind = require('lspkind')
 
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 
+
+local function filter_annoying_backslash(item, context)
+    -- Get the two characters before the cursor
+    local two_chars_before = string.sub(context.cursor_before_line, -2)
+
+    -- If the user just typed '\\' and the completion item's label is '\',
+    -- then return 'false' to filter it out.
+    if two_chars_before == '\\\\' and item.label == '\\' then
+        return false
+    end
+
+    -- Otherwise, keep the completion item
+    return true
+end
+
+
+
 -- nvim-cmp setup
 local cmp = require 'cmp'
 cmp.setup {
@@ -31,8 +48,12 @@ cmp.setup {
         ['<C-e>'] = cmp.mapping.abort(),
     }),
     sources = {
-        { name = 'nvim_lsp', max_item_count = 10 },
+        { name = 'nvim_lsp', max_item_count = 5 },
         { name = 'path',     max_item_count = 3 },
+        { name = 'luasnip', max_item_count = 5, option = {
+            filter = filter_annoying_backslash,
+        } },
+        -- { name = 'buffer',   max_item_count = 5 },
         -- { name = 'cmp_tabnine', max_item_count = 20 }
     },
     enabled = function()
@@ -60,6 +81,17 @@ cmp.setup {
     },
 
 }
+
+-- cmp.setup.filetype('tex', {
+--   sources = cmp.config.sources({
+--     { name = 'nvim_lsp',
+--       -- This disables the trigger characters for the LSP source in tex files
+--       option = { trigger_characters = false }
+--     },
+--     { name = 'buffer' },
+--     { name = 'luasnip' }
+--   })
+-- })
 
 -- autopairs
 cmp.event:on(

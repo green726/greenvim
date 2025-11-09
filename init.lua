@@ -33,6 +33,13 @@ vim.opt.encoding = "UTF-8"
 
 ---plugins
 
+
+
+require("luasnip").config.setup({
+  enable_autosnippets = true,
+})
+require("luasnip.loaders.from_lua").load({ paths ="~/.config/nvim/lua/plugins/luasnip/" })
+require("luasnip.loaders.from_vscode").lazy_load()
 require("plugins/treesitter-config")
 require("plugins/telescope-config")
 require("plugins/mason-config")
@@ -49,6 +56,8 @@ require("plugins/yazi-config")
 -- require("plugins/codecompanion-config")
 require("plugins/comment-config")
 require("plugins/todo-comments-config")
+-- require("plugins/knap-config")
+require("plugins/vimtex-config")
 
 ---end plugins
 
@@ -82,3 +91,5 @@ vim.keymap.set('v', '<leader>c', require('osc52').copy_visual)
 
 --always use system clipboard
 vim.opt.clipboard="unnamedplus"
+
+

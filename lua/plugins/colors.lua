@@ -132,6 +132,13 @@ function M.generate_user_config_highlights()
         { fg = pal.white, bg = pal.black }
 
     local groups = {
+
+        -- vimtex
+        Conceal = {
+            fg = pal.blue, -- This uses a dim color from your theme for visibility
+            bg = "NONE", -- This makes the background transparent
+        },
+
         SLHint = { fg = pal.sl.bg, bg = pal.hint, style = "bold" },
         SLInfo = { fg = pal.sl.bg, bg = pal.info, style = "bold" },
         SLWarn = { fg = pal.sl.bg, bg = pal.warn, style = "bold" },

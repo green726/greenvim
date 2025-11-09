@@ -94,8 +94,8 @@ require("lazy").setup({
             event = "VeryLazy",
         },
         {
-          "MeanderingProgrammer/render-markdown.nvim",
-          ft = { "markdown", "codecompanion" }
+            "MeanderingProgrammer/render-markdown.nvim",
+            ft = { "markdown", "codecompanion" }
         },
         --a necessary plugin to make treesitter work
         { 'reasonml-editor/vim-reason-plus' },
@@ -104,8 +104,25 @@ require("lazy").setup({
         },
         --copy over ssh
         {
-        'ojroques/nvim-osc52'
+            'ojroques/nvim-osc52'
         },
+        --latex
+        {
+            'frabjous/knap',
+        },
+        {
+            "lervag/vimtex",
+        },
+        {
+            "L3MON4D3/LuaSnip", build = "make install_jsregexp"
+        },
+        {
+    "saadparwaiz1/cmp_luasnip",
+        },
+        {"tpope/vim-abolish"},
+        -- {
+        --     "evesdropper/luasnip-latex-snippets.nvim",
+        -- }
         --AIIII
         -- {
         --     "olimorris/codecompanion.nvim",

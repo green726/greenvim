@@ -1,7 +1,7 @@
 local com_cent       = require("commander")
 local noremap        = { noremap = true }
 local noremap_silent = { noremap = true, silent = true }
-
+local ls = require("luasnip")
 -- Define the terminal object ONCE
 local Terminal = require('toggleterm.terminal').Terminal
 local gemini = Terminal:new({
@@ -40,6 +40,21 @@ com_cent.add({
     --             require("telescope").extensions.codecompanion.codecompanion(opts)
     --         end,
     --     keys = { { "n", "tc", noremap } }
+    -- },
+    {
+        desc = "Expand snippet",
+        cmd = function() ls.expand() end,
+        keys = { { "i", "<C-g>", noremap } }
+    },
+    -- {
+    --     desc = "Jump to next snippet placeholder",
+    --     cmd = function() ls.jump(1) end,
+    --     keys = { { "i", "<C-g>", noremap }, { "s", "<C-k>", noremap } }
+    -- },
+    -- {
+    --     desc = "Jump to previous snippet placeholder",
+    --     cmd = function() ls.jump(-1) end,
+    --     keys = { { "i", "<C-f>", noremap }, { "s", "<C-l>", noremap } }
     -- },
     {
         desc = "Flash jump search",
