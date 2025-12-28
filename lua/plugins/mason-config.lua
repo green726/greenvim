@@ -25,10 +25,10 @@ local function custom_attach(client)
     -- require('folding').on_attach()
 end
 
-require("lspconfig")["ocamllsp"].setup {
-    on_attach = custom_attach,
-    capabilities = capabilities,
-}
+-- vim.lsp.config["ocamllsp"].setup {
+--     on_attach = custom_attach,
+--     capabilities = capabilities,
+-- }
 
 
 -- require("mason-lspconfig").setup_handlers {
@@ -71,11 +71,11 @@ require("lspconfig")["ocamllsp"].setup {
 -- }
 
 -- print("Default handler for " .. "c3_lsp")
-require("lspconfig")["c3_lsp"].setup {
-    cmd = {"c3lsp", "--diagnostics-delay", "200"},
-    on_attach = custom_attach,
-    capabilities = capabilities,
-}
+-- vim.lsp.config["c3_lsp"].setup {
+--     cmd = {"c3lsp", "--diagnostics-delay", "200"},
+--     on_attach = custom_attach,
+--     capabilities = capabilities,
+-- }
 
 vim.api.nvim_create_autocmd("LspAttach", {
     desc = "Fix startup error by disabling semantic tokens for omnisharp",
