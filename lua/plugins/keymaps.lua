@@ -16,9 +16,26 @@ local gemini = Terminal:new({
     hidden = true,
 })
 
+local claude = Terminal:new({
+    cmd = "claude --continue",
+    display_name = "claude",
+    direction = "vertical",
+    -- Use a function for size to make it responsive to window resizes
+    -- size = function(term)
+    --     return math.floor(vim.o.columns / 3) 
+    -- end,
+    -- This is important, it prevents the terminal from opening on startup
+    hidden = true,
+})
+
+
 -- A dedicated function to toggle this specific terminal
 function _G.toggle_gemini(size)
     gemini:toggle(size)
+end
+
+function _G.toggle_claude(size)
+    claude:toggle(size)
 end
 
 
@@ -90,7 +107,8 @@ com_cent.add({
         -- cmd = _G.toggle_gemini,
         cmd = function()
             local term_size = math.floor(vim.o.columns / 3)
-            _G.toggle_gemini(term_size)
+            -- _G.toggle_gemini(term_size)
+            _G.toggle_claude(term_size)
             -- vim.cmd("ToggleTerm direction=vertical size=" .. term_size)
         end,
         keys = { { "n", "tc", noremap } }
