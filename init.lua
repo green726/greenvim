@@ -41,6 +41,9 @@ require("luasnip").config.setup({
 require("luasnip.loaders.from_lua").load({ paths ="~/.config/nvim/lua/plugins/luasnip/" })
 require("luasnip.loaders.from_vscode").lazy_load()
 require("plugins/treesitter-config")
+
+
+
 require("plugins/telescope-config")
 require("plugins/mason-config")
 require("plugins/cutlass-config")
@@ -92,4 +95,9 @@ vim.keymap.set('v', '<leader>c', require('osc52').copy_visual)
 --always use system clipboard
 vim.opt.clipboard="unnamedplus"
 
-
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { '*' }, -- Applies to every filetype detected
+  callback = function() 
+      pcall(vim.treesitter.start) -- pcall prevents errors if no parser exists
+  end,
+})

@@ -9,9 +9,9 @@ local r = ls.restore_node
 -- Math zone context
 -- taken from https://ejmastnak.com/
 
-local in_mathzone = function()
-  return vim.fn['vimtex#syntax#in_mathzone']() == 1
-end
+-- local in_mathzone = function()
+--   return vim.fn['vimtex#syntax#in_mathzone']() == 1
+-- end
 
 -- Visual placeholder
 -- taken from https://ejmastnak.com/

@@ -23,7 +23,7 @@ require("lazy").setup({
         --theme
         { "EdenEast/nightfox.nvim" },
         --syntax highlighting
-        { "nvim-treesitter/nvim-treesitter" },
+        { "nvim-treesitter/nvim-treesitter", lazy=false },
         --file finder
         { "nvim-telescope/telescope.nvim",  lazy = false },
         --icons
