@@ -45,6 +45,7 @@ require("plugins/treesitter-config")
 
 
 require("plugins/telescope-config")
+require("plugins/markdown-library").setup()
 require("plugins/mason-config")
 require("plugins/cutlass-config")
 require("plugins/autopairs-config")

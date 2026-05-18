@@ -159,6 +159,21 @@ com_cent.add({
         cmd = "<cmd>Telescope live_grep<CR>",
         keys = { { "n", "ts", noremap } }
     },
+    {
+        desc = "Open Markdown Library",
+        cmd = function() require("plugins/markdown-library").open_picker() end,
+        keys = { { "n", "tm", noremap } }
+    },
+    {
+        desc = "View Current Markdown File",
+        cmd = function() require("plugins/markdown-library").view_current() end,
+        keys = { { "n", "tv", noremap } }
+    },
+    {
+        desc = "Edit Current Markdown File Without LSP",
+        cmd = function() require("plugins/markdown-library").edit_current() end,
+        keys = { { "n", "te", noremap } }
+    },
     -- {
     --     desc = "Open Telescope Aerial",
     --     cmd = "<cmd>Telescope aerial<CR>",

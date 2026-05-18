@@ -82,7 +82,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("OmnisharpHook", {}),
     callback = function(ev)
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
-        if client.name == "omnisharp" then
+        if vim.b[ev.buf].markdown_library_disable_lsp then
+            vim.schedule(function()
+                if client then
+                    pcall(vim.lsp.buf_detach_client, ev.buf, client.id)
+                end
+            end)
+            return
+        end
+
+        if client and client.name == "omnisharp" then
             client.server_capabilities.semanticTokensProvider = nil
         end
     end,
