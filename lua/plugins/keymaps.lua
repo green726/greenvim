@@ -174,6 +174,16 @@ com_cent.add({
         cmd = function() require("plugins/markdown-library").edit_current() end,
         keys = { { "n", "te", noremap } }
     },
+    {
+        desc = "GitLab: choose MR",
+        cmd = function() require("gitlab").choose_merge_request() end,
+        keys = { { "n", "<leader>gl", noremap } }
+    },
+    {
+        desc = "GitLab: review",
+        cmd = function() require("gitlab").review() end,
+        keys = { { "n", "<leader>gr", noremap } }
+    },
     -- {
     --     desc = "Open Telescope Aerial",
     --     cmd = "<cmd>Telescope aerial<CR>",

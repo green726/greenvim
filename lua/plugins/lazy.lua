@@ -117,6 +117,21 @@ require("lazy").setup({
             "L3MON4D3/LuaSnip", build = "make install_jsregexp"
         },
         {
+            "harrisoncramer/gitlab.nvim",
+            lazy = true,
+            dependencies = {
+                "MunifTanjim/nui.nvim",
+                "nvim-lua/plenary.nvim",
+                "dlyongemallo/diffview.nvim", -- maintained fork of sindrets/diffview.nvim
+                "stevearc/dressing.nvim",      -- optional, better pickers
+                "nvim-tree/nvim-web-devicons", -- optional
+            },
+            build = "make", -- instead of the function form
+            config = function()
+                require("gitlab").setup()
+            end,
+        },
+        {
     "saadparwaiz1/cmp_luasnip",
         },
         {"tpope/vim-abolish"},
