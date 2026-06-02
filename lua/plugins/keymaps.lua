@@ -38,6 +38,14 @@ function _G.toggle_claude(size)
     claude:toggle(size)
 end
 
+local function run_octo(command)
+    if vim.fn.executable("gh") ~= 1 then
+        vim.notify("GitHub review commands require the GitHub CLI (`gh`) on PATH.", vim.log.levels.ERROR)
+        return
+    end
+
+    vim.cmd(command)
+end
 
 com_cent.add({
     -- {
@@ -175,13 +183,13 @@ com_cent.add({
         keys = { { "n", "te", noremap } }
     },
     {
-        desc = "GitLab: choose MR",
-        cmd = function() require("gitlab").choose_merge_request() end,
+        desc = "GitHub: choose PR",
+        cmd = function() run_octo("Octo pr list") end,
         keys = { { "n", "<leader>gl", noremap } }
     },
     {
-        desc = "GitLab: review",
-        cmd = function() require("gitlab").review() end,
+        desc = "GitHub: review",
+        cmd = function() run_octo("Octo review") end,
         keys = { { "n", "<leader>gr", noremap } }
     },
     -- {
