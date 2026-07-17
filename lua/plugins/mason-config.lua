@@ -82,6 +82,19 @@ vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("OmnisharpHook", {}),
     callback = function(ev)
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+        -- Octo review diffs use synthetic octo:// buffer names.  Filetype
+        -- detection can make rust-analyzer attach to them, but the server
+        -- only accepts file:// documents.
+        if client and vim.api.nvim_buf_get_name(ev.buf):match("^octo://") then
+            vim.schedule(function()
+                if vim.api.nvim_buf_is_valid(ev.buf) then
+                    pcall(vim.lsp.buf_detach_client, ev.buf, client.id)
+                end
+            end)
+            return
+        end
+
         if vim.b[ev.buf].markdown_library_disable_lsp then
             vim.schedule(function()
                 if client then
