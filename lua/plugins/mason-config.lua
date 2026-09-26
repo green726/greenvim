@@ -1,6 +1,4 @@
-require("mason").setup()
-require("mason-lspconfig").setup()
-
+-- Loaded lazily by lazy.nvim (see lazy.lua); mason itself is set up via its spec.
 require("mason-lspconfig").setup({
     ensure_installed = { --[[ "lua-language-server", ]] }
 })

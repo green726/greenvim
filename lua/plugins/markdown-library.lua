@@ -1,11 +1,19 @@
 local M = {}
 
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
-local conf = require("telescope.config").values
-local entry_display = require("telescope.pickers.entry_display")
-local finders = require("telescope.finders")
-local pickers = require("telescope.pickers")
+-- telescope modules, loaded on first picker use (keeps telescope off the startup path)
+local actions, action_state, conf, entry_display, finders, pickers
+
+local function load_telescope()
+    if pickers then
+        return
+    end
+    actions = require("telescope.actions")
+    action_state = require("telescope.actions.state")
+    conf = require("telescope.config").values
+    entry_display = require("telescope.pickers.entry_display")
+    finders = require("telescope.finders")
+    pickers = require("telescope.pickers")
+end
 
 M.root = vim.fs.normalize(vim.fn.expand("~/opt32"))
 
@@ -274,6 +282,7 @@ local function with_selection(prompt_bufnr, callback)
 end
 
 function M.open_picker()
+    load_telescope()
     local files = markdown_files()
     if #files == 0 then
         notify(("No markdown files found under %s"):format(M.root))

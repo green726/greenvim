@@ -35,28 +35,25 @@ vim.opt.encoding = "UTF-8"
 
 
 
-require("luasnip").config.setup({
-  enable_autosnippets = true,
-})
-require("luasnip.loaders.from_lua").load({ paths ="~/.config/nvim/lua/plugins/luasnip/" })
-require("luasnip.loaders.from_vscode").lazy_load()
+-- LuaSnip disabled (snippets kept in lua/plugins/luasnip/)
+-- require("luasnip").config.setup({
+--   enable_autosnippets = true,
+-- })
+-- require("luasnip.loaders.from_lua").load({ paths ="~/.config/nvim/lua/plugins/luasnip/" })
+-- require("luasnip.loaders.from_vscode").lazy_load()
 require("plugins/treesitter-config")
 
 
 
-require("plugins/telescope-config")
+-- telescope, cmp, ufo, lspsaga, yazi: configured by their lazy specs in plugins/lazy.lua
 require("plugins/markdown-library").setup()
-require("plugins/mason-config")
 require("plugins/cutlass-config")
 require("plugins/autopairs-config")
 require("plugins/close-buffers")
-require("plugins/cmp-config")
 require("plugins/toggleterm-config")
-require("plugins/ufo-config")
+require("plugins/multiplexer")
 require("plugins/harpoon-config")
-require("plugins/lspsaga-config")
 require("plugins/colors")
-require("plugins/yazi-config")
 -- require("plugins/codecompanion-config")
 require("plugins/comment-config")
 require("plugins/todo-comments-config")

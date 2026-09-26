@@ -1,12 +1,10 @@
-local harpoon = require('harpoon')
-harpoon:setup({})
+-- harpoon/telescope load on first keypress (lazy spec runs harpoon:setup)
 local noremap = { noremap = true }
-
--- basic telescope configuration
-local conf = require("telescope.config").values
+local function harpoon() return require('harpoon') end
 
 
 local function toggle_telescope(harpoon_files)
+    local conf = require("telescope.config").values
     local finder = function()
         local paths = {}
         for _, item in ipairs(harpoon_files.items) do
@@ -42,23 +40,23 @@ local com_cent = require("commander")
 com_cent.add({
     {
         "Add harpoon mark",
-        cmd = function() harpoon:list():add() end,
+        cmd = function() harpoon():list():add() end,
         keys = { { "n", "<Leader>a", noremap } }
     },
 
     {
         desc = "Open harpoon telescope",
-        cmd = function() toggle_telescope(harpoon:list()) end,
+        cmd = function() toggle_telescope(harpoon():list()) end,
         keys = { { "n", "<S-Tab>", noremap } }
     },
     {
         desc = "Harpoon next",
-        cmd = function() harpoon:list():next() end,
+        cmd = function() harpoon():list():next() end,
         keys = { { "n", "<C-p>", noremap } }
     },
     {
         desc = "Harpoon prev",
-        cmd = function() harpoon:list():prev() end,
+        cmd = function() harpoon():list():prev() end,
         keys = { { "n", "<C-n>", noremap } }
     }
 })

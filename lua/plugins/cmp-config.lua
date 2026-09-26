@@ -50,9 +50,9 @@ cmp.setup {
     sources = {
         { name = 'nvim_lsp', max_item_count = 5 },
         { name = 'path',     max_item_count = 3 },
-        { name = 'luasnip', max_item_count = 5, option = {
-            filter = filter_annoying_backslash,
-        } },
+        -- { name = 'luasnip', max_item_count = 5, option = {
+        --     filter = filter_annoying_backslash,
+        -- } },
         -- { name = 'buffer',   max_item_count = 5 },
         -- { name = 'cmp_tabnine', max_item_count = 20 }
     },
