@@ -13,7 +13,8 @@ Session sockets: `$XDG_RUNTIME_DIR/nvim-sessions/<name>.sock`.
 | inside Neovim's terminal | `nvs [name]` | Switch the current UI to that session instead of nesting Neovim |
 | shell | `nvls` | List running sessions and delete stale socket files |
 | Neovim | `\d` | Detach; the session and its terminals keep running. A plain `nvim` is saved on detach as `<folder>-<pid>` so `nvs` can find it. |
-| Neovim | `\D` | Pick a session or start a new one |
+| Neovim | `\D`, `:Sessions`, dashboard `s` | View Sessions: every running session with its state, cwd and terminals (preview lists terminals and files). `Enter` attaches, `Ctrl-e` renames, `+ new session` starts one. |
+| Neovim | `\R`, `:SessionRename [name]` | Rename the current session (prompts if no name). A plain `nvim` gets a name this way. Terminals already open in the session keep working: the old socket path stays as a hidden alias. |
 | Neovim | `Alt-h/j/k/l` | Move between windows, also from terminal mode |
 | inside Neovim's terminal | `nvim file`, `git commit` | Opens in the host Neovim (flatten.nvim); `git commit` waits until the buffer is closed |
 
@@ -47,7 +48,9 @@ nvls() {
     local s
     for s in "$_nvs_dir"/*.sock; do
         [[ -e $s ]] || continue
-        if nvim --server "$s" --remote-expr 1 &>/dev/null; then basename "$s" .sock; else rm -f "$s"; fi
+        if ! nvim --server "$s" --remote-expr 1 &>/dev/null; then rm -f "$s"
+        # symlinks back into the dir are rename aliases (see multiplexer.lua)
+        elif [[ ! -L $s || $(readlink -f "$s") != "$_nvs_dir"/* ]]; then basename "$s" .sock; fi
     done
 }
 _nvs() { mapfile -t COMPREPLY < <(compgen -W "$(nvls)" -- "${COMP_WORDS[COMP_CWORD]}"); }

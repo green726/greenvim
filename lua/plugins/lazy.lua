@@ -164,7 +164,7 @@ require("lazy").setup({
         -- {
         --     "saadparwaiz1/cmp_luasnip",
         -- },
-        --sessions (restore files/layout per cwd; dashboard "s")
+        --sessions (restore files/layout per cwd; :lua require("persistence").load())
         {
             "folke/persistence.nvim",
             event = "BufReadPre",
