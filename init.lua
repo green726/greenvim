@@ -92,6 +92,28 @@ vim.keymap.set('v', '<leader>c', require('osc52').copy_visual)
 
 --always use system clipboard
 vim.opt.clipboard="unnamedplus"
+-- The system clipboard is the terminal's, via OSC 52: this machine has no
+-- clipboard tool, and it works over ssh and through multiplexer sessions
+-- (copies go to whichever terminal is attached). Nvim only auto-enables OSC 52
+-- when 'clipboard' is empty, so set it explicitly.
+-- Paste returns the last yank instead of asking the terminal: many terminals
+-- ignore or prompt on OSC 52 reads, which would stall every `p`. Paste text
+-- from other apps with the terminal's own paste key.
+do
+    local last = { {}, "v" }
+    local function copy(reg)
+        return function(lines, regtype)
+            last = { lines, regtype }
+            require("vim.ui.clipboard.osc52").copy(reg)(lines)
+        end
+    end
+    local function paste() return last end
+    vim.g.clipboard = {
+        name = "OSC 52",
+        copy = { ["+"] = copy("+"), ["*"] = copy("*") },
+        paste = { ["+"] = paste, ["*"] = paste },
+    }
+end
 
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { '*' }, -- Applies to every filetype detected

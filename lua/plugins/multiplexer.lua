@@ -54,6 +54,39 @@ local function current_session()
     end
 end
 
+-- This nvim's session name, or nil. Only scans the directory (no RPC), so it
+-- is cheap enough to run on every UI attach.
+local function own_name()
+    if vim.v.servername == "" or vim.fn.isdirectory(M.dir) == 0 then return end
+    local me = realpath(vim.v.servername)
+    for file, kind in vim.fs.dir(M.dir) do
+        local name = file:match("^(.*)%.sock$")
+        local sock = name and M.dir .. "/" .. file
+        if sock and realpath(sock) == me
+            and not (kind == "link" and vim.startswith(me, M.dir .. "/") and sock ~= me) then
+            return name
+        end
+    end
+end
+
+-- Terminal (kitty tab) title = session name. Attached UIs write it to their
+-- own terminal, so it shows up on the local machine over ssh too. Plain,
+-- unnamed nvims leave the title alone.
+function M.update_title()
+    local name = own_name()
+    vim.o.titlestring = name and ("nvs:" .. name) or ""
+    vim.o.title = name ~= nil
+end
+
+-- Retitle the session at `sock` (it may be another nvim).
+local function retitle(sock)
+    if is_current(sock) then return M.update_title() end
+    local ok, ch = pcall(vim.fn.sockconnect, "pipe", sock, { rpc = true })
+    if not ok or ch == 0 then return end
+    pcall(vim.rpcrequest, ch, "nvim_exec_lua", "require('plugins/multiplexer').update_title()", {})
+    vim.fn.chanclose(ch)
+end
+
 -- Attach this UI to session `name`, starting it (in a terminal) if needed.
 function M.open(name)
     local sock = M.dir .. "/" .. name .. ".sock"
@@ -103,6 +136,7 @@ function M.rename(old, new)
         if not cur then
             -- plain nvim that was never detached: give it a name
             vim.uv.fs_symlink(vim.v.servername, dst)
+            M.update_title()
             return vim.notify("session named '" .. new .. "'", vim.log.levels.INFO, { title = "Sessions" })
         end
         old, src = cur.name, cur.sock
@@ -113,6 +147,7 @@ function M.rename(old, new)
     local ok, err = vim.uv.fs_rename(src, dst)
     if not ok then return fail("rename failed: " .. err) end
     if st.type == "socket" then vim.uv.fs_symlink(dst, src) end -- alias for $NVIM in its terminals
+    retitle(dst)
     vim.notify("session '" .. old .. "' renamed to '" .. new .. "'", vim.log.levels.INFO, { title = "Sessions" })
 end
 
@@ -227,12 +262,27 @@ end, { nargs = "?", desc = "Rename the current session" })
 -- Terminal ergonomics
 vim.opt.scrollback = 100000
 local group = vim.api.nvim_create_augroup("Multiplexer", {})
-vim.api.nvim_create_autocmd("TermOpen", { group = group, command = "startinsert" })
-vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+-- disabled: terminals open in normal mode (press i/a to type)
+-- vim.api.nvim_create_autocmd("TermOpen", { group = group, command = "startinsert" })
+-- Like `tmux attach -d`: a newly attached UI detaches the others. Nvim sizes
+-- the screen to the smallest attached UI, so a forgotten client (e.g. an ssh
+-- session left open on another device) would otherwise shrink the session.
+-- chan 0 is the builtin TUI, which cannot be detached remotely.
+vim.api.nvim_create_autocmd("UIEnter", {
     group = group,
-    pattern = "term://*",
-    command = "startinsert",
+    callback = function()
+        local new = vim.v.event.chan
+        for _, ui in ipairs(vim.api.nvim_list_uis()) do
+            if ui.chan and ui.chan ~= 0 and ui.chan ~= new then pcall(vim.fn.chanclose, ui.chan) end
+        end
+        M.update_title()
+    end,
 })
+-- vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+--     group = group,
+--     pattern = "term://*",
+--     command = "startinsert",
+-- })
 -- `nvs name` inside a :terminal prints OSC 1337;nvs=<name>. It is handled
 -- in-process because :connect targets the last UI to talk to the server, and a
 -- `nvim --remote-send` client would claim that role and break it.

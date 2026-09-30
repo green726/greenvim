@@ -9,9 +9,10 @@ Session sockets: `$XDG_RUNTIME_DIR/nvim-sessions/<name>.sock`.
 | Where | Key / command | What it does |
 |---|---|---|
 | shell | `nt` | Neovim straight into a terminal |
-| shell | `nvs [name]` | Attach to session `name` (default `main`), creating it if needed. Tab-completes session names. |
+| shell | `nvs [name]` | Attach to session `name` (default `main`), creating it if needed. Tab-completes session names. Attaching disconnects any other device still attached (like `tmux attach -d`), so the session always fits the screen you're using. |
 | inside Neovim's terminal | `nvs [name]` | Switch the current UI to that session instead of nesting Neovim |
 | shell | `nvls` | List running sessions and delete stale socket files |
+| kitty / terminal | tab title | Shows `nvs:<name>` while attached to a session, also over ssh. Updates on rename; the previous title comes back on detach. Plain `nvim` doesn't change the title. |
 | Neovim | `\d` | Detach; the session and its terminals keep running. A plain `nvim` is saved on detach as `<folder>-<pid>` so `nvs` can find it. |
 | Neovim | `\D`, `:Sessions`, dashboard `s` | View Sessions: every running session with its state, cwd and terminals (preview lists terminals and files). `Enter` attaches, `Ctrl-e` renames, `+ new session` starts one. |
 | Neovim | `\R`, `:SessionRename [name]` | Rename the current session (prompts if no name). A plain `nvim` gets a name this way. Terminals already open in the session keep working: the old socket path stays as a hidden alias. |
@@ -45,13 +46,8 @@ nvs() {
     fi
 }
 nvls() {
-    local s
-    for s in "$_nvs_dir"/*.sock; do
-        [[ -e $s ]] || continue
-        if ! nvim --server "$s" --remote-expr 1 &>/dev/null; then rm -f "$s"
-        # symlinks back into the dir are rename aliases (see multiplexer.lua)
-        elif [[ ! -L $s || $(readlink -f "$s") != "$_nvs_dir"/* ]]; then basename "$s" .sock; fi
-    done
+    # one process, connect-only liveness check (scripts/nvls.lua): busy/stuck sessions don't block it
+    [[ -d $_nvs_dir ]] && nvim --clean --headless -l "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/scripts/nvls.lua" "$_nvs_dir"
 }
 _nvs() { mapfile -t COMPREPLY < <(compgen -W "$(nvls)" -- "${COMP_WORDS[COMP_CWORD]}"); }
 complete -F _nvs nvs
