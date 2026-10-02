@@ -1,0 +1,31 @@
+# --- nvim as a terminal multiplexer (see ~/.config/nvim/MULTIPLEXER.md)
+# Paste into ~/.zshrc. Needs this nvim config at ~/.config/nvim (nvls uses
+# scripts/nvls.lua from it). zsh port of the functions in the linux ~/.bashrc.
+# nt: nvim straight into a terminal
+# nvs [name]: attach to session `name` (default: main), creating it in a terminal;
+#             inside nvim it switches the current UI instead of nesting
+# nvls: list live sessions. Detach with \d, switch with \D inside nvim.
+# Sessions live in $XDG_RUNTIME_DIR/nvim-sessions, or /tmp/nvim-sessions on
+# macOS (no XDG_RUNTIME_DIR); multiplexer.lua uses the same rule.
+alias nt='nvim +terminal'
+_nvs_dir="${XDG_RUNTIME_DIR:-/tmp}/nvim-sessions"
+nvs() {
+    local name="${1:-main}"
+    local sock="$_nvs_dir/$name.sock"
+    if [[ -n $NVIM ]]; then
+        # handled by the TermRequest autocmd in multiplexer.lua
+        printf '\e]1337;nvs=%s\a' "$name"
+    elif nvim --server "$sock" --remote-expr 1 &>/dev/null; then
+        nvim --remote-ui --server "$sock"
+    else
+        mkdir -p "$_nvs_dir" && rm -f "$sock"
+        nvim --listen "$sock" +terminal
+    fi
+}
+nvls() {
+    [[ -d $_nvs_dir ]] && nvim --clean --headless -l "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/scripts/nvls.lua" "$_nvs_dir"
+}
+# tab completion of session names for nvs (needs compinit, which oh-my-zsh etc. run)
+_nvs() { compadd -- ${(f)"$(nvls)"} }
+(( $+functions[compdef] )) && compdef _nvs nvs
+# --- end nvim multiplexer
