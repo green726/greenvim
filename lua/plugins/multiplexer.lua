@@ -295,6 +295,100 @@ vim.api.nvim_create_autocmd("TermRequest", {
     end,
 })
 
+-- Terminal titles in the tabline and statusline. Programs set the title with
+-- OSC 0/2 (bash's PROMPT_COMMAND from /etc/bash.bashrc sets user@host:cwd at
+-- each prompt; htop, ssh, nvim, etc. set their own). Nvim keeps it in
+-- b:term_title, which starts out as the term:// buffer name. Nvim redraws the
+-- statuslines itself when it changes, but not the tabline (timer below).
+local function term_title(buf)
+    if vim.bo[buf].buftype ~= "terminal" then return end
+    local title = vim.b[buf].term_title
+    if title and title ~= "" and title ~= vim.api.nvim_buf_get_name(buf) then return title end
+end
+
+local function escape(s) return (s:gsub("%%", "%%%%")) end
+
+-- %{%...%} item replacing the default statusline's %f. While it is evaluated
+-- the statusline's window is temporarily current (g:statusline_winid is only
+-- set for %! expressions).
+function M.statusline_name()
+    local title = term_title(vim.api.nvim_get_current_buf())
+    return title and escape(title) or "%f"
+end
+
+-- The builtin tabline's layout (window count, "+" when modified, shortened
+-- path, close button) with terminal titles in place of term:// names.
+function M.tabline()
+    local tabs = vim.api.nvim_list_tabpages()
+    local cur = vim.api.nvim_get_current_tabpage()
+    local room = math.max(8, math.floor(vim.o.columns / #tabs) - 4)
+    local parts = {}
+    for i, tab in ipairs(tabs) do
+        local wins, modified = 0, false
+        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+            if vim.api.nvim_win_get_config(win).relative == "" then
+                wins = wins + 1
+                modified = modified or vim.bo[vim.api.nvim_win_get_buf(win)].modified
+            end
+        end
+        local buf = vim.api.nvim_win_get_buf(vim.api.nvim_tabpage_get_win(tab))
+        local label = term_title(buf)
+        if not label then
+            local name = vim.api.nvim_buf_get_name(buf)
+            label = name == "" and "[No Name]" or vim.fn.pathshorten(vim.fn.fnamemodify(name, ":~:."))
+        end
+        local len = vim.fn.strchars(label)
+        if len > room then label = "<" .. vim.fn.strcharpart(label, len - room + 1) end
+        local prefix = (wins > 1 and tostring(wins) or "") .. (modified and "+" or "")
+        parts[#parts + 1] = ("%%#%s#%%%dT %s%s "):format(
+            tab == cur and "TabLineSel" or "TabLine", i, prefix ~= "" and prefix .. " " or "", escape(label))
+    end
+    parts[#parts + 1] = "%#TabLineFill#%T%="
+    if #tabs > 1 then parts[#parts + 1] = "%#TabLine#%999XX" end
+    return table.concat(parts)
+end
+
+-- luaeval, not v:lua: v:lua.require'...' rejects the "/" in the module name.
+vim.o.tabline = [[%!luaeval("require('plugins/multiplexer').tabline()")]]
+do
+    local default = vim.api.nvim_get_option_info2("statusline", {}).default
+    local patched, n = default:gsub("%%f", [[%%{%%luaeval("require('plugins/multiplexer').statusline_name()")%%}]], 1)
+    if n == 1 then vim.o.statusline = patched end
+end
+
+-- Disabled: crashed nvim (SIGABRT). The watcher runs while nvim is processing
+-- terminal output inside its event loop; the Vimscript callback's breakcheck
+-- polls that loop again, and nvim abort()s on loop re-entry. It hit after
+-- ~1000 title changes (bash retitles at every prompt).
+-- -- Coalesces bursts (some programs retitle on every frame) into one redraw.
+-- local redraw_pending = false
+-- function M.redraw_lines()
+--     if redraw_pending then return end
+--     redraw_pending = true
+--     vim.schedule(function()
+--         redraw_pending = false
+--         vim.cmd("redrawstatus! | redrawtabline")
+--     end)
+-- end
+-- vim.api.nvim_create_autocmd("TermOpen", {
+--     group = group,
+--     command = [[call dictwatcheradd(b:, 'term_title', {d, k, c -> luaeval("require('plugins/multiplexer').redraw_lines()")})]],
+-- })
+
+-- Instead a timer (runs from the main loop, so it is safe) redraws the tabline
+-- when its text changed, which also covers terminals in other tabs.
+do
+    local last
+    if vim.g.multiplexer_tabline_timer then pcall(vim.fn.timer_stop, vim.g.multiplexer_tabline_timer) end
+    vim.g.multiplexer_tabline_timer = vim.fn.timer_start(500, function()
+        local ok, line = pcall(M.tabline)
+        if ok and line ~= last then
+            last = line
+            vim.cmd.redrawtabline()
+        end
+    end, { ["repeat"] = -1 })
+end
+
 local noremap = { noremap = true }
 require("commander").add({
     {
